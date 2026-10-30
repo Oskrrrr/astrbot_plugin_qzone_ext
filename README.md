@@ -200,7 +200,7 @@
 - 回评/互动依赖 [NapCat](https://github.com/NapNeko/NapCatQQ) 提供的 QQ 空间 cookie，登录态失效时会在日志里提示。
 - 所有提示词都可以在页面里改，插件不带任何角色设定或地图名，开箱是通用的。
 - 原版 [astrbot_plugin_qzone](https://github.com/Zhalslar/astrbot_plugin_qzone) 负责看/赞/评/删/表白墙等全量操作；本插件只负责“定时 + 回评 + 配图”。两边的定时任务建议只开一个，避免重复发说说/评论。
-- 定时轮不配图、页面「试发一条」才配图，是为了在 dry-run 阶段省掉不必要的生图费用；正式发布时按 `attach_image` 正常配图。
+- dry-run 阶段，定时轮不配图、页面「试发一条」才配图，省掉不必要的生图费用；关掉 dry-run 后，定时轮按 `attach_image` 正常配图。
 
 ## 📄 来源与许可
 
