@@ -18,10 +18,10 @@
 | 让空间保持活跃 | 每小时随机时间点，按跳过概率、每日上限、发布时段发说说 |
 | 有人评论自动回 | 定时读自己说说的新评论，按人格语气回复，已回评论去重 |
 | 主动互动 | 可选评论好友说说、顺手点赞，支持忽略名单 |
-| 配图不重样 | 预存图按季节/时段/天气匹配；没命中就调「画图」插件生成 |
+| 配图不重样 | 预存图按季节/时段/天气匹配；没命中就调 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件生成 |
 | 画面更贴内容 | 动态模式先用文本模型写画面描述，再拼固定要求去画图 |
 | 结合当下 | 注入时间、星期、季节、天气；可选从群聊取灵感素材 |
-| 角色卡联动 | 读角色卡的说说提示词、画风、画面要求/负面词 |
+| [角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 联动 | 读角色卡的说说提示词、画风、画面要求/负面词 |
 | 先预览再发 | dry-run 只生成不发布，页面看文案和配图预览；失败自动降级纯文字 |
 
 ## 🚀 快速开始
@@ -53,9 +53,9 @@
 - **人格**：填 AstrBot 人格名；留空用默认人格。人格决定“谁在说话”。
 - **说说提示词**：留空用内置（第一人称、40～80 字、随手发一条的口吻）。
 - **画面要求**：构图与禁止项，永远生效；留空用内置（只画静物、不要人物文字、正方形）。
-- **画风**：优先取「角色卡」里这张卡的配图画风；卡里没写才用「画图」插件的画风。
+- **画风**：优先取 [角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 里这张卡的配图画风；卡里没写才用 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件的画风。
 - **画面描述提示词**：动态配图用；留空用内置（只写景物光线，不画人、不写文字、不编天气）。
-- **按内容动态写画面描述**：开启后多一次文本模型调用，先写画面再画图；关闭则只把固定要求 + 正文交给画图插件。
+- **按内容动态写画面描述**：开启后多一次文本模型调用，先写画面再画图；关闭则只把固定要求 + 正文交给 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件。
 - **预存图**：目录里放图片，文件名带季节/时段/天气关键词会被优先匹配；最近用过的 5 张会避开。
 - **主动互动 / 自动回评**：分别有开关、间隔、每轮上限；默认关闭主动互动，自动回评默认开启。
 
@@ -70,9 +70,9 @@
 - 生成失败、画图插件没装 → 自动只发文字，不影响发布。
 - 图片上传失败 → 自动改发纯文字，并在页面上标注。
 
-## 🤝 与角色卡配合
+## 🤝 与 [角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 配合
 
-装了 `astrbot_plugin_persona_card` 时，说说外挂会读当前人格对应角色卡的「说说」板块：
+装了 [astrbot_plugin_persona_card](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 时，说说外挂会读当前人格对应角色卡的「说说」板块：
 
 - 说说写作要求（口癖、素材、字数）
 - 配图画风
@@ -89,15 +89,15 @@
 
 ## 📌 说明
 
-- 回评/互动依赖 NapCat 提供的 QQ 空间 cookie，登录态失效时会在日志里提示。
+- 回评/互动依赖 [NapCat](https://github.com/NapNeko/NapCatQQ) 提供的 QQ 空间 cookie，登录态失效时会在日志里提示。
 - 所有提示词都可以在页面里改，插件不带任何角色设定或地图名，开箱是通用的。
-- 原版 `astrbot_plugin_qzone` 负责看/赞/评/删/表白墙等全量操作；本插件只负责“定时 + 回评 + 配图”。两边的定时任务建议只开一个，避免重复发说说/评论。
+- 原版 [astrbot_plugin_qzone](https://github.com/Zhalslar/astrbot_plugin_qzone) 负责看/赞/评/删/表白墙等全量操作；本插件只负责“定时 + 回评 + 配图”。两边的定时任务建议只开一个，避免重复发说说/评论。
 
 ## 📄 来源与许可
 
 本插件以 **GPL-3.0** 发布，完整许可见 [LICENSE](./LICENSE)，来源与修改说明见 [NOTICE](./NOTICE)。
 
 - **协议层**：`client.py` 中的 QQ 空间接口（登录 Cookie、`gtk`、JSONP 解析、图片上传、发说说、评论/点赞/回评、说说列表等）移植/改写自 [Zhalslar/astrbot_plugin_qzone](https://github.com/Zhalslar/astrbot_plugin_qzone)。原项目仓库附带的是 **GPLv3** `LICENSE`；其 README 徽章写作 MIT，存在口径不一致，本插件按更严格的 GPLv3 处理。原项目 README 还注明部分代码参考了 [CampuxBot](https://github.com/idoknow/CampuxBot)。
-- **新增部分**：定时编排、dry-run、配图链路（预存图/生成图/动态提示词/天气时间/群素材）、角色卡与画图插件联动、自写配置页、JSON 状态与评论去重、失败降级等。
+- **新增部分**：定时编排、dry-run、配图链路（预存图/生成图/动态提示词/天气时间/群素材）、[角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 与 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件联动、自写配置页、JSON 状态与评论去重、失败降级等。
 - 如果你只是在本机自用、不分发本插件，GPLv3 不产生分发义务；如果要公开仓库或上架插件市场，请保留 `LICENSE`/`NOTICE` 与源码，并保留上述署名。
 - 如果原作者后续确认实际许可是 MIT，本插件可在保留版权与许可声明的前提下调整；届时会同步更新本段与 `NOTICE`。
