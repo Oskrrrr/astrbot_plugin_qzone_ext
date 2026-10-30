@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌌 QQ空间外挂
+# 🌌 QQ空间说说管家
 
 [![AstrBot](https://img.shields.io/badge/AstrBot-%3E%3D4.16-27a7d8)](https://github.com/AstrBotDevs/AstrBot)
 [![Release](https://img.shields.io/github/v/release/Oskrrrr/astrbot_plugin_qzone_ext?color=27a7d8&label=Release)](https://github.com/Oskrrrr/astrbot_plugin_qzone_ext/releases)
@@ -13,7 +13,7 @@
 
 ## ✨ 特色
 
-| 你想做什么 | 外挂怎么帮你 |
+| 你想做什么 | 管家怎么帮你 |
 |---|---|
 | 让空间保持活跃 | 每小时随机时间点，按跳过概率、每日上限、发布时段发说说 |
 | 有人评论自动回 | 定时读自己说说的新评论，按人格语气回复，已回评论去重 |
@@ -29,7 +29,7 @@
 1. 把目录放进 `AstrBot/data/plugins/astrbot_plugin_qzone_ext`。
 2. 安装依赖：`pip install -r requirements.txt`（Pillow、json5）。
 3. 重启 AstrBot，或重载插件。
-4. 在 WebUI 插件页打开「QQ空间外挂」页面。
+4. 在 WebUI 插件页打开「QQ空间说说管家」页面。
 
 首次使用建议保持 `dry_run` 开着，点「试发一条」看几条文案和配图，满意后再关。
 
@@ -60,7 +60,7 @@
 ### 2. 生成图：调用「画图」插件
 
 - 打开 `attach_image` 后，没命中预存图时会调用 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件的 `generate()`。
-- 说说外挂只负责拼提示词和决定风格/负面词；真正用哪个 provider、哪个模型，由画图插件的 `providers.json` 决定。
+- 说说管家只负责拼提示词和决定风格/负面词；真正用哪个 provider、哪个模型，由画图插件的 `providers.json` 决定。
 - 没装画图插件、生成失败、图片上传失败时，自动降级为纯文字，不影响这条说说发出去。
 - 页面「概览」会显示 `draw_available` 和当前风格来源，方便排查为什么没配图。
 
@@ -84,12 +84,12 @@
 
 | 内容 | 第一优先 | 第二优先 | 兜底 |
 |---|---|---|---|
-| 说说提示词 | [角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 的 `post_prompt` | 外挂的 `post_prompt` | 内置“第一人称 40～80 字” |
-| 画面要求 | 角色卡的 `image_requirements` | 外挂的 `image_prompt` | 内置“只画静物、不要人物文字” |
+| 说说提示词 | [角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 的 `post_prompt` | 管家的 `post_prompt` | 内置“第一人称 40～80 字” |
+| 画面要求 | 角色卡的 `image_requirements` | 管家的 `image_prompt` | 内置“只画静物、不要人物文字” |
 | 画风 | 角色卡的 `image_style` | [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件的画风 | 不追加 |
-| 负面词 | 角色卡的 `image_negative` | 外挂的 `image_negative` | 画图插件默认负面词 |
+| 负面词 | 角色卡的 `image_negative` | 管家的 `image_negative` | 画图插件默认负面词 |
 
-这样分工的好处：**说说配图不继承画图插件聊天用的画面要求**；画图插件只提供“画师能力”，说说外挂/角色卡决定“画什么、什么风格”。
+这样分工的好处：**说说配图不继承画图插件聊天用的画面要求**；画图插件只提供“画师能力”，说说管家/角色卡决定“画什么、什么风格”。
 
 ## 🌤️ 日期、时间与天气
 
@@ -162,19 +162,19 @@
 
 ### 与 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件
 
-- 说说外挂通过 `context.get_registered_star("astrbot_plugin_draw")` 拿画图插件实例，调用它的 `generate(prompt, style=..., negative=...)`。
-- 画图插件负责 provider/模型/密钥/重试；说说外挂负责“画什么、什么风格、什么不要”。
+- 说说管家通过 `context.get_registered_star("astrbot_plugin_draw")` 拿画图插件实例，调用它的 `generate(prompt, style=..., negative=...)`。
+- 画图插件负责 provider/模型/密钥/重试；说说管家负责“画什么、什么风格、什么不要”。
 - 没装画图插件时，`draw_available=false`，自动只发文字。
-- 画图插件版本较老、`generate()` 不接 `style/negative` 时，会说外挂会自动退到只传 prompt 的调用方式，不报错。
-- 说说外挂不修改画图插件的代码、不直接读它的 `providers.json`。
+- 画图插件版本较老、`generate()` 不接 `style/negative` 时，说说管家会自动退到只传 prompt 的调用方式，不报错。
+- 说说管家不修改画图插件的代码、不直接读它的 `providers.json`。
 
 ### 与 [角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 插件
 
-- 说说外挂通过 `context.get_registered_star("astrbot_plugin_persona_card")` 拿角色卡实例，调用 `qzone_profile(persona_id)`。
+- 说说管家通过 `context.get_registered_star("astrbot_plugin_persona_card")` 拿角色卡实例，调用 `qzone_profile(persona_id)`。
 - 角色卡按“卡片名 / 人格名”匹配，返回这张卡的「说说」板块：`post_prompt`、`image_style`、`image_requirements`、`image_negative`。
-- 说说外挂优先用角色卡的值；卡里没写或没装角色卡时，用外挂自己的配置/内置默认。
-- 人格本身仍由 AstrBot 人格系统提供；角色卡只是把“这张卡的说说设定”借给外挂，不改变人格选择。
-- 角色卡没填「说说」板块时，外挂完全按自己的默认工作，两边可以独立使用。
+- 说说管家优先用角色卡的值；卡里没写或没装角色卡时，用管家自己的配置/内置默认。
+- 人格本身仍由 AstrBot 人格系统提供；角色卡只是把“这张卡的说说设定”借给管家，不改变人格选择。
+- 角色卡没填「说说」板块时，管家完全按自己的默认工作，两边可以独立使用。
 
 ## ⚙️ 配置
 

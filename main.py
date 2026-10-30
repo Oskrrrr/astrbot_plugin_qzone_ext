@@ -1,4 +1,4 @@
-"""QQ 空间外挂：定时发说说 + 自动回评，不依赖官方的 astrbot_plugin_qzone。
+"""QQ空间说说管家：定时发说说 + 自动回评，不依赖官方的 astrbot_plugin_qzone。
 
 设计取向：
 - 所有写入操作默认 dry-run，确认无误再把 dry_run 关掉；
@@ -807,7 +807,7 @@ class QzoneExtPlugin(Star):
         return await self._make_post_image(text, scene), "generated"
 
     async def _call_draw(self, prompt: str) -> list[str]:
-        """调画图插件。风格：角色卡 → 画图插件；负面词：角色卡/外挂 → 画图插件。"""
+        """调画图插件。风格：角色卡 → 画图插件；负面词：角色卡/管家 → 画图插件。"""
         draw = self._draw_plugin()
         if draw is None or not hasattr(draw, "generate"):
             raise RuntimeError("没找到可用的画图插件")
