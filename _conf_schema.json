@@ -1,0 +1,222 @@
+{
+  "enabled": {
+    "description": "启用外挂",
+    "type": "bool",
+    "default": false,
+    "hint": "开启后才会启动定时发说说和自动回评。"
+  },
+  "dry_run": {
+    "description": "试运行（只写日志，不真的发）",
+    "type": "bool",
+    "default": true,
+    "hint": "建议先开一两天，看日志里的文案满意后再关掉。"
+  },
+  "persona_id": {
+    "description": "使用的人格",
+    "type": "string",
+    "default": "",
+    "hint": "填人格名（与「人格」页面一致）；留空则用 AstrBot 默认人格。"
+  },
+  "provider_id": {
+    "description": "聊天模型（Provider ID）",
+    "type": "string",
+    "default": "",
+    "hint": "留空用当前默认模型。"
+  },
+  "publish_enabled": {
+    "description": "定时发说说",
+    "type": "bool",
+    "default": true,
+    "hint": "每小时随机挑一个时间点，再按「跳过概率」决定发不发。"
+  },
+  "publish_offset_minutes": {
+    "description": "每小时内的随机范围（分钟）",
+    "type": "int",
+    "default": 50,
+    "hint": "例如 50 表示在整点后 0～50 分钟之间随机。"
+  },
+  "publish_skip_probability": {
+    "description": "跳过概率",
+    "type": "float",
+    "default": 0.85,
+    "hint": "0.85 表示每小时有 85% 概率不发，配合每日上限控制频率。"
+  },
+  "daily_limit": {
+    "description": "每天最多发几条",
+    "type": "int",
+    "default": 3
+  },
+  "publish_hours": {
+    "description": "发布时段（小时，如 8-23）",
+    "type": "string",
+    "default": "8-23",
+    "hint": "留空表示全天；支持跨零点写法，如 22-6。"
+  },
+  "post_prompt": {
+    "description": "说说提示词",
+    "type": "string",
+    "default": "",
+    "hint": "留空用内置提示词；想换风格就在这里改。"
+  },
+  "attach_image": {
+    "description": "发说说时配一张图",
+    "type": "bool",
+    "default": false,
+    "hint": "调用「画图」插件生成配图；没装画图插件时自动降级为纯文字。dry-run 下不生成。"
+  },
+  "image_prompt": {
+    "description": "画面要求（构图与禁止项）",
+    "type": "string",
+    "default": "",
+    "hint": "角色卡里没写画面要求时才用这段；和风格无关，风格在角色卡里。"
+  },
+  "dynamic_image_prompt": {
+    "description": "按内容动态写画面描述",
+    "type": "bool",
+    "default": false,
+    "hint": "开启后先让聊天模型根据正文和时间天气写一段画面描述，再拼固定要求去画图；多一次文本模型调用。"
+  },
+  "image_director_prompt": {
+    "description": "画面描述提示词",
+    "type": "string",
+    "default": "",
+    "hint": "动态模式下用；留空用内置（只写景物和光线，不画人、不写文字、不编天气）。"
+  },
+  "image_negative": {
+    "description": "配图负面词",
+    "type": "string",
+    "default": "",
+    "hint": "留空则不传负面词；说说配图不继承画图插件的负面词。"
+  },
+  "inject_time": {
+    "description": "说说结合实际时间",
+    "type": "bool",
+    "default": true,
+    "hint": "时间取系统时钟（日期/星期/时段/季节），写进提示词，不靠模型猜。"
+  },
+  "inject_weather": {
+    "description": "说说附加实时天气",
+    "type": "bool",
+    "default": false,
+    "hint": "天气来自 Open-Meteo（免密钥）。取不到就跳过，不编造。"
+  },
+  "weather_city": {
+    "description": "天气城市",
+    "type": "string",
+    "default": "",
+    "hint": "填中文城市名，如 上海；留空则只取时间。"
+  },
+  "stock_image_enabled": {
+    "description": "按概率使用预存图",
+    "type": "bool",
+    "default": false,
+    "hint": "从预存图目录里挑图，按季节/时段/天气匹配文件名；挑不到再生成。"
+  },
+  "stock_image_dir": {
+    "description": "预存图目录",
+    "type": "string",
+    "default": "/AstrBot/data/plugin_data/astrbot_plugin_qzone_ext/images"
+  },
+  "stock_image_ratio": {
+    "description": "使用预存图的概率（0～1）",
+    "type": "float",
+    "default": 0.5
+  },
+  "material_enabled": {
+    "description": "写说说时参考群聊",
+    "type": "bool",
+    "default": false,
+    "hint": "人格始终生效；勾选后额外拉一段群聊当灵感（不引用、不点名）。"
+  },
+  "material_groups": {
+    "description": "只从这些群取素材（逗号分隔，空=全部）",
+    "type": "string",
+    "default": ""
+  },
+  "material_ignore_groups": {
+    "description": "忽略这些群（逗号分隔）",
+    "type": "string",
+    "default": ""
+  },
+  "material_max_messages": {
+    "description": "最多参考多少条聊天消息",
+    "type": "int",
+    "default": 150,
+    "hint": "20～500；越多越贵，也越容易写成群聊转述。"
+  },
+  "require_persona": {
+    "description": "找不到人格时拒绝发言",
+    "type": "bool",
+    "default": true,
+    "hint": "开启后，配置人格和 AstrBot 默认人格都取不到时，本轮直接跳过，不用无人物风格凑合。"
+  },
+  "interact_enabled": {
+    "description": "主动互动（评论好友说说）",
+    "type": "bool",
+    "default": false,
+    "hint": "对应原版的定时评论好友说说；dry-run 下只预演。"
+  },
+  "interact_interval_minutes": {
+    "description": "主动互动检查间隔（分钟）",
+    "type": "int",
+    "default": 60
+  },
+  "interact_max_per_run": {
+    "description": "每轮最多评论几条",
+    "type": "int",
+    "default": 2
+  },
+  "interact_like": {
+    "description": "评论后顺手点赞",
+    "type": "bool",
+    "default": true
+  },
+  "interact_ignore_users": {
+    "description": "主动互动忽略的用户（逗号分隔）",
+    "type": "string",
+    "default": ""
+  },
+  "interact_min_chars": {
+    "description": "说说至少多少字才评论",
+    "type": "int",
+    "default": 8
+  },
+  "comment_prompt": {
+    "description": "评论好友说说的提示词",
+    "type": "string",
+    "default": "",
+    "hint": "留空用内置短指令；人格由「人格」设置统一注入。"
+  },
+  "reply_enabled": {
+    "description": "自动回评",
+    "type": "bool",
+    "default": true
+  },
+  "reply_interval_minutes": {
+    "description": "回评检查间隔（分钟）",
+    "type": "int",
+    "default": 15
+  },
+  "reply_max_per_run": {
+    "description": "每轮最多回几条",
+    "type": "int",
+    "default": 3
+  },
+  "reply_min_age_seconds": {
+    "description": "评论至少多久后才回（秒）",
+    "type": "int",
+    "default": 60,
+    "hint": "避免和评论者同时在线时秒回，显得太急。"
+  },
+  "reply_prompt": {
+    "description": "回评提示词",
+    "type": "string",
+    "default": "",
+    "hint": "留空用内置提示词。"
+  },
+  "max_reply_chars": {
+    "description": "回复最大字数",
+    "type": "int",
+    "default": 80
+  }
+}

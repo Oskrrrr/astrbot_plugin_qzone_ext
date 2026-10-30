@@ -1,0 +1,43 @@
+astrbot_plugin_qzone_ext
+Copyright (C) 2026 dafeiyu
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+---
+
+Provenance / 来源说明
+
+The QQ Zone protocol layer in `client.py` is derived from
+`astrbot_plugin_qzone` by Zhalslar:
+
+    https://github.com/Zhalslar/astrbot_plugin_qzone
+
+The original project ships a `LICENSE` file containing the GNU General
+Public License v3.0. Its README badge says MIT, so the original project
+has an internal licensing discrepancy; this plugin follows the LICENSE
+file (GPLv3), which is the stricter and safer reading. The original
+README also credits the CampuxBot project for part of its code:
+
+    https://github.com/idoknow/CampuxBot
+
+Original work added by this plugin:
+
+- scheduling loops, dry-run mode, config and page Web APIs
+- image pipeline: stock-image selection, generated images, dynamic
+  image prompts, weather/time context, group-chat material
+- integration with the persona-card and draw plugins
+- JSON state, comment de-duplication, and failure fallbacks
+
+If the original author clarifies a different license, this NOTICE and
+the README should be updated accordingly.

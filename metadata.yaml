@@ -1,0 +1,15 @@
+name: astrbot_plugin_qzone_ext
+display_name: QQ空间外挂
+short_desc: 定时说说、自动回评与配图
+desc: 定时发说说 + 自动回评 + 配图；协议层移植/改写自 Zhalslar 的 GPLv3 插件，默认 dry-run，确认后再真正发布。
+version: 0.1.0
+author: dafeiyu
+repo: https://github.com/Oskrrrr/astrbot_plugin_qzone_ext
+astrbot_version: ">=4.16,<5"
+support_platforms:
+  - aiocqhttp
+tags:
+  - QQ空间
+  - 说说
+  - 自动化
+  - 配图

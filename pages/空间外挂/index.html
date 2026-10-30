@@ -1,0 +1,268 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>空间外挂</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <div class="brand">
+          <span class="logo">🌤</span>
+          <div>
+            <h1>空间外挂</h1>
+            <p>定时发说说 · 自动回评 · 可配任意人格</p>
+          </div>
+        </div>
+        <button id="btnRefresh" class="ghost">刷新</button>
+      </header>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="overview">概览</button>
+        <button class="tab" data-tab="settings">设置</button>
+      </nav>
+
+      <div id="tab-overview">
+        <section class="stats">
+          <div class="stat"><span>平台</span><strong id="stReady">—</strong></div>
+          <div class="stat"><span>今日已发</span><strong id="stToday">—</strong></div>
+          <div class="stat"><span>发布时段</span><strong id="stHours">—</strong></div>
+          <div class="stat"><span>已回评论</span><strong id="stReplied">—</strong></div>
+        </section>
+
+        <section class="panel">
+          <div class="dry">
+            <label class="switch">
+              <input type="checkbox" id="dryRun" />
+              <i></i>
+            </label>
+            <div class="dry-text">
+              <strong>dry-run 试运行</strong>
+              <small id="dryHint">打开时只生成文案并记录，不会真的发布。</small>
+            </div>
+          </div>
+          <div class="actions">
+            <button id="btnPublish" class="primary">试发一条</button>
+            <button id="btnReply">检查并回复评论</button>
+            <span id="msg" class="msg"></span>
+          </div>
+          <div class="preview" id="preview" hidden>
+            <img id="previewImg" alt="" />
+            <div class="preview-text">
+              <span class="tag">配图预览（未上传）</span>
+              <p id="previewPath"></p>
+              <details class="prompt-box">
+                <summary>这次用的画面描述</summary>
+                <pre id="previewPrompt"></pre>
+              </details>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel history">
+          <div class="head"><h2>最近生成的文案</h2><span id="histCount" class="muted"></span></div>
+          <ul id="histList"></ul>
+        </section>
+      </div>
+
+      <div id="tab-settings" hidden>
+        <section class="panel settings">
+          <div class="group">
+            <h3>运行</h3>
+            <div class="check-row">
+              <label class="check"><input type="checkbox" id="cfgEnabled" /> 启用插件</label>
+              <label class="check"><input type="checkbox" id="cfgDryRun" /> dry-run 试运行</label>
+              <label class="check"><input type="checkbox" id="cfgRequirePersona" /> 找不到人格时拒绝发言</label>
+            </div>
+            <div class="grid2">
+              <label class="field">
+                <span>人格</span>
+                <select id="cfgPersona"></select>
+              </label>
+              <label class="field">
+                <span>聊天模型</span>
+                <select id="cfgProvider"></select>
+              </label>
+            </div>
+          </div>
+
+          <div class="group">
+            <h3>发说说</h3>
+            <div class="check-row">
+              <label class="check"><input type="checkbox" id="cfgPublishEnabled" /> 启用定时发说说</label>
+            </div>
+            <div class="grid2">
+              <label class="field">
+                <span>每小时随机范围（分钟）</span>
+                <input id="cfgOffset" type="number" min="0" max="59" />
+              </label>
+              <label class="field">
+                <span>跳过概率（0～0.99）</span>
+                <input id="cfgSkip" type="number" step="0.05" min="0" max="0.99" />
+              </label>
+              <label class="field">
+                <span>每天最多几条</span>
+                <input id="cfgDaily" type="number" min="1" max="20" />
+              </label>
+              <label class="field">
+                <span>发布时段（如 8-23，留空为全天）</span>
+                <input id="cfgHours" />
+              </label>
+            </div>
+          </div>
+
+          <div class="group">
+            <h3>配图（依赖「画图」插件）</h3>
+            <div class="check-row">
+              <label class="check"><input type="checkbox" id="cfgAttachImage" /> 发说说时自动配一张图</label>
+            </div>
+            <label class="field">
+              <span>画面要求（构图/禁止项；角色卡里没写就用这段）</span>
+              <textarea id="cfgImagePrompt" rows="4"></textarea>
+            </label>
+            <div class="check-row" style="padding-top: 10px">
+              <label class="check"><input type="checkbox" id="cfgDynamicImage" /> 按这条内容动态写画面描述</label>
+            </div>
+            <label class="field">
+              <span>画面描述提示词（动态模式用，留空用内置）</span>
+              <textarea id="cfgDirectorPrompt" rows="4"></textarea>
+            </label>
+            <label class="field">
+              <span>配图负面词（留空就不传；说说配图不继承画图插件的负面词）</span>
+              <textarea id="cfgImageNegative" rows="2" placeholder="例如：人物, 人脸, 手, 文字, 水印"></textarea>
+            </label>
+            <p class="hint" id="styleSource"></p>
+            <p class="hint" id="drawNote"></p>
+            <div class="check-row" style="padding-top: 10px">
+              <label class="check"><input type="checkbox" id="cfgStockEnabled" /> 按概率使用预存图</label>
+            </div>
+            <div class="grid2">
+              <label class="field">
+                <span>预存图目录</span>
+                <input id="cfgStockDir" />
+              </label>
+              <label class="field">
+                <span>使用预存图的概率（0～1）</span>
+                <input id="cfgStockRatio" type="number" min="0" max="1" step="0.1" />
+              </label>
+            </div>
+            <p class="hint">动态模式会先按正文和时间天气写一段画面描述，再拼上画面要求去画图。画风优先用角色卡里的，角色卡没写才用画图插件的；负面词同理。</p>
+          </div>
+
+          <div class="group">
+            <h3>时间与天气</h3>
+            <div class="check-row">
+              <label class="check"><input type="checkbox" id="cfgInjectTime" /> 说说结合实际时间</label>
+              <label class="check"><input type="checkbox" id="cfgInjectWeather" /> 附加实时天气</label>
+            </div>
+            <div class="grid2">
+              <label class="field">
+                <span>天气城市</span>
+                <input id="cfgWeatherCity" placeholder="上海" />
+              </label>
+            </div>
+            <p class="hint">时间取系统时钟，天气来自 Open-Meteo（免密钥，不用 AI）。只作用于说说正文；数据取不到就跳过，不编造。</p>
+          </div>
+
+          <div class="group">
+            <h3>素材来源</h3>
+            <div class="check-row">
+              <label class="check"><input type="checkbox" id="cfgMaterialEnabled" /> 写说说时参考群聊（人格始终生效）</label>
+            </div>
+            <div class="grid2">
+              <label class="field">
+                <span>最多参考多少条消息</span>
+                <input id="cfgMaterialMax" type="number" min="20" max="500" />
+              </label>
+              <label class="field">
+                <span>只从这些群取素材（逗号分隔，空=全部）</span>
+                <input id="cfgMaterialGroups" placeholder="123456789,987654321" />
+              </label>
+              <label class="field">
+                <span>忽略这些群（逗号分隔）</span>
+                <input id="cfgMaterialIgnore" placeholder="111111111" />
+              </label>
+            </div>
+            <p class="hint">不勾选时只用「人格」写说说；勾选后额外参考群聊，但只作灵感：不引用原话、不点名、不写成「群里有人说」。</p>
+          </div>
+
+          <div class="group">
+            <h3>自动回评</h3>
+            <div class="check-row">
+              <label class="check"><input type="checkbox" id="cfgReplyEnabled" /> 启用自动回评</label>
+            </div>
+            <div class="grid2">
+              <label class="field">
+                <span>检查间隔（分钟）</span>
+                <input id="cfgInterval" type="number" min="5" max="1440" />
+              </label>
+              <label class="field">
+                <span>每轮最多回几条</span>
+                <input id="cfgReplyMax" type="number" min="1" max="10" />
+              </label>
+              <label class="field">
+                <span>评论至少多久后回（秒）</span>
+                <input id="cfgReplyMinAge" type="number" min="0" />
+              </label>
+              <label class="field">
+                <span>回复最大字数</span>
+                <input id="cfgReplyChars" type="number" min="10" max="200" />
+              </label>
+            </div>
+          </div>
+
+          <div class="group">
+            <h3>主动互动（评论好友说说）</h3>
+            <div class="check-row">
+              <label class="check"><input type="checkbox" id="cfgInteractEnabled" /> 启用主动互动</label>
+              <label class="check"><input type="checkbox" id="cfgInteractLike" /> 评论后点赞</label>
+            </div>
+            <div class="grid2">
+              <label class="field">
+                <span>检查间隔（分钟）</span>
+                <input id="cfgInteractInterval" type="number" min="10" max="1440" />
+              </label>
+              <label class="field">
+                <span>每轮最多评论几条</span>
+                <input id="cfgInteractMax" type="number" min="1" max="5" />
+              </label>
+              <label class="field">
+                <span>忽略这些用户（逗号分隔）</span>
+                <input id="cfgInteractIgnore" placeholder="123456789" />
+              </label>
+              <label class="field">
+                <span>说说至少多少字才评论</span>
+                <input id="cfgInteractMinChars" type="number" min="1" max="100" />
+              </label>
+            </div>
+            <label class="field">
+              <span>评论提示词（留空用内置）</span>
+              <textarea id="cfgCommentPrompt" rows="3"></textarea>
+            </label>
+            <p class="hint">对应原版的「定时评论好友说说」；dry-run 下只预演不发送。</p>
+          </div>
+
+          <div class="group">
+            <h3>提示词</h3>
+            <label class="field">
+              <span>说说提示词（留空用内置）</span>
+              <textarea id="cfgPostPrompt" rows="6"></textarea>
+            </label>
+            <label class="field">
+              <span>回评提示词（留空用内置）</span>
+              <textarea id="cfgReplyPrompt" rows="5"></textarea>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button id="btnSave" class="primary">保存设置</button>
+            <span id="saveMsg" class="msg"></span>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
