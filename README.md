@@ -18,7 +18,7 @@
 | 让空间保持活跃 | 每小时随机时间点，按跳过概率、每日上限、发布时段发说说 |
 | 有人评论自动回 | 定时读自己说说的新评论，按人格语气回复，已回评论去重 |
 | 主动互动 | 可选评论好友说说、顺手点赞，支持忽略名单 |
-| 配图不重样 | 预存图按季节/时段/天气匹配；没命中就调 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件生成 |
+| 配图不重样 | 预存图按季节/时段/天气匹配；没命中就调 [说说画师](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件生成 |
 | 画面更贴内容 | 动态模式先用文本模型写画面描述，再拼固定要求去画图 |
 | 结合当下 | 注入日期、星期、季节、时段、天气；可选从群聊取灵感素材 |
 | 角色卡联动 | 读 [角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 的说说提示词、画风、画面要求/负面词 |
@@ -37,7 +37,7 @@
 
 ```text
 定时触发 ─→ 生成文案（人格 + 日期时间/天气 + 可选群素材）
-        ─→ 决定配图（预存图 / 画图插件生成 / 不配图）
+        ─→ 决定配图（预存图 / 说说画师生成 / 不配图）
         ─→ dry-run 预览，或真正发布
         ─→ 定时检查新评论，按人格语气回复
 ```
@@ -57,11 +57,11 @@
 - 还会用动态画面描述里的关键词继续打分；最近用过的 5 张会降权，避免连续重复。
 - 按 `stock_image_ratio` 概率决定这轮用预存图还是生成图；预存图目录为空/没命中时自动回落生成。
 
-### 2. 生成图：调用「画图」插件
+### 2. 生成图：调用「说说画师」
 
-- 打开 `attach_image` 后，没命中预存图时会调用 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件的 `generate()`。
-- 说说管家只负责拼提示词和决定风格/负面词；真正用哪个 provider、哪个模型，由画图插件的 `providers.json` 决定。
-- 没装画图插件、生成失败、图片上传失败时，自动降级为纯文字，不影响这条说说发出去。
+- 打开 `attach_image` 后，没命中预存图时会调用 [说说画师](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件的 `generate()`。
+- 说说管家只负责拼提示词和决定风格/负面词；真正用哪个 provider、哪个模型，由说说画师的 `providers.json` 决定。
+- 没装说说画师、生成失败、图片上传失败时，自动降级为纯文字，不影响这条说说发出去。
 - 页面「概览」会显示 `draw_available` 和当前风格来源，方便排查为什么没配图。
 
 ### 3. 动态画面描述：让文本模型先“想画面”
@@ -73,12 +73,12 @@
         ↓  image_director_prompt
 画面描述（60～110 字，只写场景/物件/光线，不写画风、不写文字、不编天气）
         ↓  拼上固定画面要求
-交给画图插件生成
+交给说说画师生成
 ```
 
-- 画面描述只写“画什么”，不写“什么风格”；风格由角色卡/画图插件决定。
+- 画面描述只写“画什么”，不写“什么风格”；风格由角色卡/说说画师决定。
 - 固定画面要求（`image_prompt`）永远生效：只画场景与静物、不要人物/文字/水印、正方形构图等。
-- 关闭动态模式时，直接把“固定要求 + 说说正文”交给画图插件，少一次模型调用。
+- 关闭动态模式时，直接把“固定要求 + 说说正文”交给说说画师，少一次模型调用。
 
 ### 4. 风格、画面要求、负面词从哪来
 
@@ -86,10 +86,10 @@
 |---|---|---|---|
 | 说说提示词 | [角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 的 `post_prompt` | 管家的 `post_prompt` | 内置“第一人称 40～80 字” |
 | 画面要求 | 角色卡的 `image_requirements` | 管家的 `image_prompt` | 内置“只画静物、不要人物文字” |
-| 画风 | 角色卡的 `image_style` | [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件的画风 | 不追加 |
-| 负面词 | 角色卡的 `image_negative` | 管家的 `image_negative` | 画图插件默认负面词 |
+| 画风 | 角色卡的 `image_style` | [说说画师](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件的画风 | 不追加 |
+| 负面词 | 角色卡的 `image_negative` | 管家的 `image_negative` | 说说画师默认负面词 |
 
-这样分工的好处：**说说配图不继承画图插件聊天用的画面要求**；画图插件只提供“画师能力”，说说管家/角色卡决定“画什么、什么风格”。
+这样分工的好处：**说说配图不继承说说画师聊天用的画面要求**；说说画师只提供“画师能力”，说说管家/角色卡决定“画什么、什么风格”。
 
 ## 🌤️ 日期、时间与天气
 
@@ -160,13 +160,13 @@
 
 ## 🔗 和其他两个插件的联动
 
-### 与 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件
+### 与 [说说画师](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件
 
-- 说说管家通过 `context.get_registered_star("astrbot_plugin_draw")` 拿画图插件实例，调用它的 `generate(prompt, style=..., negative=...)`。
-- 画图插件负责 provider/模型/密钥/重试；说说管家负责“画什么、什么风格、什么不要”。
-- 没装画图插件时，`draw_available=false`，自动只发文字。
-- 画图插件版本较老、`generate()` 不接 `style/negative` 时，说说管家会自动退到只传 prompt 的调用方式，不报错。
-- 说说管家不修改画图插件的代码、不直接读它的 `providers.json`。
+- 说说管家通过 `context.get_registered_star("astrbot_plugin_draw")` 拿说说画师实例，调用它的 `generate(prompt, style=..., negative=...)`。
+- 说说画师负责 provider/模型/密钥/重试；说说管家负责“画什么、什么风格、什么不要”。
+- 没装说说画师时，`draw_available=false`，自动只发文字。
+- 说说画师版本较老、`generate()` 不接 `style/negative` 时，说说管家会自动退到只传 prompt 的调用方式，不报错。
+- 说说管家不修改说说画师的代码、不直接读它的 `providers.json`。
 
 ### 与 [角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 插件
 
@@ -183,9 +183,9 @@
 - **人格**：填 AstrBot 人格名；留空用默认人格。人格决定“谁在说话”。
 - **说说提示词**：留空用内置（第一人称、40～80 字、随手发一条的口吻）。
 - **画面要求**：构图与禁止项，永远生效；留空用内置（只画静物、不要人物文字、正方形）。
-- **画风**：优先取 [角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 里这张卡的配图画风；卡里没写才用 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件的画风。
+- **画风**：优先取 [角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 里这张卡的配图画风；卡里没写才用 [说说画师](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件的画风。
 - **画面描述提示词**：动态配图用；留空用内置（只写景物光线，不画人、不写文字、不编天气）。
-- **按内容动态写画面描述**：开启后多一次文本模型调用，先写画面再画图；关闭则只把固定要求 + 正文交给 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件。
+- **按内容动态写画面描述**：开启后多一次文本模型调用，先写画面再画图；关闭则只把固定要求 + 正文交给 [说说画师](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件。
 - **预存图**：目录里放图片，文件名带季节/时段/天气关键词会被优先匹配；最近用过的 5 张会避开。
 
 ## 🖥️ 页面
@@ -207,6 +207,6 @@
 本插件以 **GPL-3.0** 发布，完整许可见 [LICENSE](./LICENSE)，来源与修改说明见 [NOTICE](./NOTICE)。
 
 - **协议层**：`client.py` 中的 QQ 空间接口（登录 Cookie、`gtk`、JSONP 解析、图片上传、发说说、评论/点赞/回评、说说列表等）移植/改写自 [Zhalslar/astrbot_plugin_qzone](https://github.com/Zhalslar/astrbot_plugin_qzone)。原项目仓库附带的是 **GPLv3** `LICENSE`；其 README 徽章写作 MIT，存在口径不一致，本插件按更严格的 GPLv3 处理。原项目 README 还注明部分代码参考了 [CampuxBot](https://github.com/idoknow/CampuxBot)。
-- **新增部分**：定时编排、dry-run、配图链路（预存图/生成图/动态提示词/天气时间/群素材）、[角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 与 [画图](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件联动、自写配置页、JSON 状态与评论去重、失败降级等。
+- **新增部分**：定时编排、dry-run、配图链路（预存图/生成图/动态提示词/天气时间/群素材）、[角色卡](https://github.com/Oskrrrr/astrbot_plugin_persona_card) 与 [说说画师](https://github.com/Oskrrrr/astrbot_plugin_draw) 插件联动、自写配置页、JSON 状态与评论去重、失败降级等。
 - 如果你只是在本机自用、不分发本插件，GPLv3 不产生分发义务；如果要公开仓库或上架插件市场，请保留 `LICENSE`/`NOTICE` 与源码，并保留上述署名。
 - 如果原作者后续确认实际许可是 MIT，本插件可在保留版权与许可声明的前提下调整；届时会同步更新本段与 `NOTICE`。

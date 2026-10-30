@@ -1,7 +1,7 @@
 name: astrbot_plugin_qzone_ext
 display_name: QQ空间说说管家
 short_desc: 定时说说 + 回评 + 智能配图/天气
-desc: QQ空间说说管家：定时发说说、自动回评、可选主动互动；预存图/画图插件生成/LLM 动态画面描述，日期时间天气注入，群素材，画图/角色卡联动；默认 dry-run 预览。协议层移植自 Zhalslar（GPLv3）。
+desc: QQ空间说说管家：定时发说说、自动回评、可选主动互动；预存图/说说画师生成/LLM 动态画面描述，日期时间天气注入，群素材，说说画师/角色卡联动；默认 dry-run 预览。协议层移植自 Zhalslar（GPLv3）。
 version: 0.1.2
 author: Oskrrrr
 repo: https://github.com/Oskrrrr/astrbot_plugin_qzone_ext

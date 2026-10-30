@@ -636,7 +636,7 @@ class QzoneExtPlugin(Star):
         except Exception:
             draw_style = ""
         if draw_style:
-            return {"kind": "draw", "label": "画图插件", "text": draw_style}
+            return {"kind": "draw", "label": "说说画师", "text": draw_style}
         return {"kind": "none", "label": "无（不追加风格）", "text": ""}
 
     def _draw_plugin(self):
@@ -794,7 +794,7 @@ class QzoneExtPlugin(Star):
         return scene
 
     async def _prepare_images(self, text: str, scene: str = "") -> tuple[list[str], str]:
-        """配图：按概率优先用预存图，否则调画图插件生成。返回 (路径, 来源)。"""
+        """配图：按概率优先用预存图，否则调说说画师生成。返回 (路径, 来源)。"""
         self._last_image_prompt = ""
         if not self.attach_image:
             return [], ""
@@ -807,10 +807,10 @@ class QzoneExtPlugin(Star):
         return await self._make_post_image(text, scene), "generated"
 
     async def _call_draw(self, prompt: str) -> list[str]:
-        """调画图插件。风格：角色卡 → 画图插件；负面词：角色卡/管家 → 画图插件。"""
+        """调说说画师。风格：角色卡 → 说说画师；负面词：角色卡/管家 → 说说画师。"""
         draw = self._draw_plugin()
         if draw is None or not hasattr(draw, "generate"):
-            raise RuntimeError("没找到可用的画图插件")
+            raise RuntimeError("没找到可用的说说画师")
         style = self._image_style()
         negative = self._image_negative()
         try:
@@ -823,7 +823,7 @@ class QzoneExtPlugin(Star):
             return await draw.generate(prompt)
 
     async def _make_post_image(self, text: str, scene: str = "") -> list[str]:
-        """调画图插件生成一张图，返回本地路径；失败返回空列表。"""
+        """调说说画师生成一张图，返回本地路径；失败返回空列表。"""
         rules = self._image_rules()
         if scene:
             prompt = f"{scene}\n\n{rules}"
@@ -833,7 +833,7 @@ class QzoneExtPlugin(Star):
         try:
             paths = await self._call_draw(prompt)
         except Exception as exc:
-            logger.warning("[qzone_ext] 画图插件生成失败：%s", exc)
+            logger.warning("[qzone_ext] 说说画师生成失败：%s", exc)
             return []
         out = [str(path) for path in list(paths)[:1] if path]
         if out:

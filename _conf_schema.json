@@ -1,6 +1,6 @@
 {
   "enabled": {
-    "description": "启用外挂",
+    "description": "启用 QQ空间说说管家",
     "type": "bool",
     "default": false,
     "hint": "开启后才会启动定时发说说和自动回评。"
@@ -62,7 +62,7 @@
     "description": "发说说时配一张图",
     "type": "bool",
     "default": false,
-    "hint": "调用「画图」插件生成配图；没装画图插件时自动降级为纯文字。dry-run 下不生成。"
+    "hint": "调用「说说画师」生成配图；没装说说画师时自动降级为纯文字。dry-run 下不生成。"
   },
   "image_prompt": {
     "description": "画面要求（构图与禁止项）",
@@ -86,7 +86,7 @@
     "description": "配图负面词",
     "type": "string",
     "default": "",
-    "hint": "留空则不传负面词；说说配图不继承画图插件的负面词。"
+    "hint": "留空则不传负面词；说说配图不继承说说画师的负面词。"
   },
   "inject_time": {
     "description": "说说结合实际时间",

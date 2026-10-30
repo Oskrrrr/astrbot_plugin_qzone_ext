@@ -137,8 +137,8 @@ function fillConfig(data) {
   $("cfgStockRatio").value = values.stock_image_ratio ?? 0.5;
   const drawOk = Boolean(options.draw_available);
   $("drawNote").textContent = drawOk
-    ? "已检测到「画图」插件：开启后会先画一张再发布，画失败会自动退回纯文字。"
-    : "没检测到「画图」插件：开启也只发纯文字（不会报错）。";
+    ? "已检测到「说说画师」：开启后会先画一张再发布，画失败会自动退回纯文字。"
+    : "没检测到「说说画师」：开启也只发纯文字（不会报错）。";
   $("drawNote").classList.toggle("err", !drawOk);
   const source = options.style_source || {};
   const preview = (source.text || "").slice(0, 40);
